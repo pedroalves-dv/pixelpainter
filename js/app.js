@@ -18,6 +18,7 @@ const app = {
     app.drawBoard();
     app.drawFormWithSliders();
     app.drawPalette();
+    app.enableDrawing();
   },
 
   // /**
@@ -27,6 +28,18 @@ const app = {
   //    * @param {string} placeholder  le texte d'aide a afficher dans l'inpur
   //    * @returns HTMLInputElement Le bouton crée
   //    */
+  // createInput: function(id, placeholder = '')
+  // {
+  //   // Créer l'element
+  //   let input = document.createElement('input');
+  //   // ajouter le type, une classe, un placeholder
+  //   input.setAttribute('type', 'text');
+  //   input.setAttribute('placeholder',placeholder);
+  //   input.setAttribute('id', id);
+  //   input.className = 'input-text';
+  //   // Retourne l'input crée a l'appelant
+  //   return input;
+  // },
 
   /**
    * Cette fonction permet de créer un bouton de type <button>
@@ -70,7 +83,9 @@ const app = {
       app.board.appendChild(ligne);
     }
     app.board.addEventListener("click", app.handlePixelClick);
+    app.enableDrawing();
   },
+
 
   /**
    * Cette fonction gère le click sur un pixel du container 'invader'
@@ -78,12 +93,47 @@ const app = {
    * @param {Event} event
    */
   handlePixelClick: function (event) {
+    
     const element = event.target;
     app.styles.forEach(function (style) {
       element.classList.remove("palette--" + style);
     });
     element.classList.add("palette--" + app.activeColor);
   },
+    // Add these lines
+    enableDrawing: function() {
+      let isDrawing = false;
+    
+      // Get all the pixels
+      const pixels = document.querySelectorAll('.pixel');
+    
+      // Add mousedown and mouseup event listeners to each pixel
+      pixels.forEach((pixel) => {
+        pixel.addEventListener('mousedown', (event) => {
+          event.preventDefault(); // prevents drag behaviour
+          isDrawing = true;
+          app.handlePixelClick(event);
+        });
+    
+        pixel.addEventListener('mouseup', () => {
+          isDrawing = false;
+        });
+      });
+    
+      app.board.addEventListener('mousemove', (event) => {
+        if (isDrawing === true) {
+          const element = event.target;
+          // Check if the mouse is over a pixel
+          if (element.classList.contains("pixel")) {
+            app.handlePixelClick(event);
+          }
+        }
+      });
+    
+      app.board.addEventListener('mouseleave', () => {
+        isDrawing = false;
+      });
+    },
 
   /**
    * Fonction de création d'un formulaire avec les deux imput et le bouton
