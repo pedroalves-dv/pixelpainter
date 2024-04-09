@@ -27,18 +27,6 @@ const app = {
   //    * @param {string} placeholder  le texte d'aide a afficher dans l'inpur
   //    * @returns HTMLInputElement Le bouton crée
   //    */
-  // createInput: function(id, placeholder = '')
-  // {
-  //   // Créer l'element
-  //   let input = document.createElement('input');
-  //   // ajouter le type, une classe, un placeholder
-  //   input.setAttribute('type', 'text');
-  //   input.setAttribute('placeholder',placeholder);
-  //   input.setAttribute('id', id);
-  //   input.className = 'input-text';
-  //   // Retourne l'input crée a l'appelant
-  //   return input;
-  // },
 
   /**
    * Cette fonction permet de créer un bouton de type <button>
