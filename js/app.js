@@ -21,26 +21,7 @@ const app = {
     app.enableDrawing();
   },
 
-  // /**
-  //    * Cette fonction permet de créer un <input type='text'> avec la possibilité
-  //    * de définir un placeholder
-  //    *
-  //    * @param {string} placeholder  le texte d'aide a afficher dans l'inpur
-  //    * @returns HTMLInputElement Le bouton crée
-  //    */
-  // createInput: function(id, placeholder = '')
-  // {
-  //   // Créer l'element
-  //   let input = document.createElement('input');
-  //   // ajouter le type, une classe, un placeholder
-  //   input.setAttribute('type', 'text');
-  //   input.setAttribute('placeholder',placeholder);
-  //   input.setAttribute('id', id);
-  //   input.className = 'input-text';
-  //   // Retourne l'input crée a l'appelant
-  //   return input;
-  // },
-
+  
   /**
    * Cette fonction permet de créer un bouton de type <button>
    *
@@ -93,44 +74,37 @@ const app = {
    * @param {Event} event
    */
   handlePixelClick: function (event) {
-    
     const element = event.target;
-    app.styles.forEach(function (style) {
-      element.classList.remove("palette--" + style);
-    });
-    element.classList.add("palette--" + app.activeColor);
+    if (element.classList.contains("pixel")) {
+      element.classList.remove("palette--" + app.activeColor);
+      element.classList.add("palette--" + app.activeColor);
+    }
   },
     // Add these lines
-    enableDrawing: function() {
+    enableDrawing: function () {
       let isDrawing = false;
+      const pixels = document.querySelectorAll(".pixel");
     
-      // Get all the pixels
-      const pixels = document.querySelectorAll('.pixel');
-    
-      // Add mousedown and mouseup event listeners to each pixel
       pixels.forEach((pixel) => {
-        pixel.addEventListener('mousedown', (event) => {
-          event.preventDefault(); // prevents drag behaviour
+        pixel.addEventListener("mousedown", (event) => {
+          event.preventDefault();
           isDrawing = true;
           app.handlePixelClick(event);
         });
     
-        pixel.addEventListener('mouseup', () => {
+        pixel.addEventListener("mouseup", () => {
+          event.preventDefault();
           isDrawing = false;
+        });
+    
+        pixel.addEventListener("mousemove", (event) => {
+          if (isDrawing) {
+            app.handlePixelClick(event);
+          }
         });
       });
     
-      app.board.addEventListener('mousemove', (event) => {
-        if (isDrawing === true) {
-          const element = event.target;
-          // Check if the mouse is over a pixel
-          if (element.classList.contains("pixel")) {
-            app.handlePixelClick(event);
-          }
-        }
-      });
-    
-      app.board.addEventListener('mouseleave', () => {
+      app.board.addEventListener("mouseleave", () => {
         isDrawing = false;
       });
     },
@@ -198,9 +172,6 @@ const app = {
     return sliderContainer;
   },
 
-  /**
-   * Function to create the form with sliders dynamically
-   */
   drawFormWithSliders: function () {
     // Clear existing form content
     app.form.innerHTML = "";
