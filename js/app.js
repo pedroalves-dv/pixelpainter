@@ -92,7 +92,7 @@ const app = {
           app.handlePixelClick(event);
         });
     
-        pixel.addEventListener("mouseup", () => {
+        pixel.addEventListener("mouseup", (event) => {
           event.preventDefault();
           isDrawing = false;
         });
