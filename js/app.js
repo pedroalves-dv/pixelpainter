@@ -2,14 +2,14 @@ const app = {
   // Taille de la grille et des pixels
   gridSize: 8,
   pixelSize: 50,
-  activeColor: "plain",
+  activeColor: "color1",
 
   // Element container pour notre grille de pixels
   board: document.getElementById("invader"),
   form: document.querySelector(".configuration"),
 
   // 4 styles possibles pour les couleurs
-  styles: ["plain", "empty", "light", "highlight", "shadow"],
+  styles: ["color1", "color2", "color3", "color4", "color5", "color6", "color7", "color8"],
 
   /**
    * Cette fonction initialise le board et démarre l'application
@@ -73,10 +73,23 @@ const app = {
    *
    * @param {Event} event
    */
+  // handlePixelClick: function (event) {
+  //   const element = event.target;
+  //   if (element.classList.contains("pixel")) {
+  //     element.classList.remove("palette--" + app.activeColor);
+  //     element.classList.add("palette--" + app.activeColor);
+  //   }
+  // },
+
   handlePixelClick: function (event) {
     const element = event.target;
     if (element.classList.contains("pixel")) {
-      element.classList.remove("palette--" + app.activeColor);
+      // Remove all possible color classes
+      app.styles.forEach((style) => {
+        element.classList.remove("palette--" + style);
+      });
+  
+      // Add the active color class
       element.classList.add("palette--" + app.activeColor);
     }
   },
@@ -108,27 +121,6 @@ const app = {
         isDrawing = false;
       });
     },
-
-  /**
-   * Fonction de création d'un formulaire avec les deux imput et le bouton
-   */
-  // drawFormulaire: function()
-  // {
-  //   // Ajout des elements du formulaire dans le container form
-  //   // Création des deux input text
-  //   const inputNbPixels = app.createInput('nb-pixels', 'Taille de la grille');
-  //   app.form.appendChild(inputNbPixels);
-
-  //   const inputSizPixels = app.createInput('size-pixels', 'Taille des pixels');
-  //   app.form.appendChild(inputSizPixels);
-
-  //   // Création du bouton valider
-  //   const validation = app.createButton('Valider');
-  //   app.form.appendChild(validation);
-
-  //   // Ajout du handler sur le submit formulaire
-  //   app.form.addEventListener('submit', app.handleValidationClick);
-  // },
 
   /**
    * Function to create a slider with a label dynamically
@@ -245,32 +237,8 @@ const app = {
   //  *
   //  * @param {PointerEvent} event L'evt a l'orinine de l'appel à la fonction
   //  */
-  // handleValidationClick: function(event)
-  // {
-  //   // Cette fonction empeche la remontée des evt vers les parents (event bubbling)
-  //   event.preventDefault();
 
-  //   // Récupération des deux champs texte
-  //   let nbPixels = document.getElementById('nb-pixels');
-  //   let sizePixels = document.getElementById('size-pixels');
-
-  //   // Récupération des valeurs
-  //   let valueNbPixels = Number(nbPixels.value);
-  //   let valueSizePixels = Number(sizePixels.value);
-
-  //   // Si les valeurs sont correctes, alors prise en compte
-  //   // et on redessine le nouveau board avec ces parametres
-  //   if (valueNbPixels && valueSizePixels) {
-  //     app.gridSize = valueNbPixels;
-  //     app.pixelSize = valueSizePixels;
-  //     app.drawBoard();
-  //   }
-  // },
-
-  /**
-   * Cette fonction permet de gérer la construction et l'affichage
-   * de la palette de couleurs
-   */
+  
   drawPalette: function () {
     // Création d'une div 'palette'
     let palette = document.createElement("div");
