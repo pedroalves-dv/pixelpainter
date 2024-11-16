@@ -101,6 +101,7 @@ span {
   justify-content: center;
   min-height: 100vh;
   background: #e0e0e0;
+  box-shadow: 0 0 0 0.7px black;
 }
 
 
@@ -112,6 +113,7 @@ span {
   background: white;
   margin-top: 50px;
   cursor: crosshair;
+  border: 1px solid black;
 }
 
 .ligne {
@@ -120,7 +122,8 @@ span {
 }
 
 .pixel {
-  border: 1px solid #0c0c0c;
+  background-color: white;
+  box-shadow: 0 0 0 0.7px black;
 }
 
 .palette {
