@@ -3,7 +3,7 @@
 **Pixel Painter** is a simple yet fun web-based pixel art editor that allows users to create pixelated drawings with ease. Built using HTML, CSS, and JavaScript, this project offers a minimalist and intuitive interface.
 
 🔗 **Live Demo:** [Pixel Painter](https://pedroalves-dv.github.io/pixelpainter/)
-<iframe src="https://pedroalves-dv.github.io/pixelpainter/" width="800" height="400" style="border:1px solid #ccc;"></iframe>
+![Pixel Painter Screenshot](./pixelpainter-screenshot.jpg)
 
 ## 📌 Features
 
