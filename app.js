@@ -1,7 +1,7 @@
 const app = {
   // Taille de la grille et des pixels
-  gridSize: 8,
-  pixelSize: 50,
+  gridSize: 30,
+  pixelSize: 20,
   activeColor: "color1",
 
   // Element container pour notre grille de pixels
@@ -9,7 +9,24 @@ const app = {
   form: document.querySelector(".configuration"),
 
   // 4 styles possibles pour les couleurs
-  styles: ["color1", "color2", "color3", "color4", "color5", "color6", "color7", "color8"],
+  styles: [
+    "color1",
+    "color2",
+    "color3",
+    "color4",
+    "color5",
+    "color6",
+    "color7",
+    "color8",
+    "color9",
+    "color10",
+    "color11",
+    "color12",
+    "color13",
+    "color14",
+    "color15",
+    "color16",
+  ],
 
   /**
    * Cette fonction initialise le board et démarre l'application
@@ -21,7 +38,6 @@ const app = {
     app.enableDrawing();
   },
 
-  
   /**
    * Cette fonction permet de créer un bouton de type <button>
    *
@@ -67,7 +83,6 @@ const app = {
     app.enableDrawing();
   },
 
-
   /**
    * Cette fonction gère le click sur un pixel du container 'invader'
    *
@@ -88,39 +103,39 @@ const app = {
       app.styles.forEach((style) => {
         element.classList.remove("palette--" + style);
       });
-  
+
       // Add the active color class
       element.classList.add("palette--" + app.activeColor);
     }
   },
-    // Add these lines
-    enableDrawing: function () {
-      let isDrawing = false;
-      const pixels = document.querySelectorAll(".pixel");
-    
-      pixels.forEach((pixel) => {
-        pixel.addEventListener("mousedown", (event) => {
-          event.preventDefault();
-          isDrawing = true;
-          app.handlePixelClick(event);
-        });
-    
-        pixel.addEventListener("mouseup", (event) => {
-          event.preventDefault();
-          isDrawing = false;
-        });
-    
-        pixel.addEventListener("mousemove", (event) => {
-          if (isDrawing) {
-            app.handlePixelClick(event);
-          }
-        });
+  // Add these lines
+  enableDrawing: function () {
+    let isDrawing = false;
+    const pixels = document.querySelectorAll(".pixel");
+
+    pixels.forEach((pixel) => {
+      pixel.addEventListener("mousedown", (event) => {
+        event.preventDefault();
+        isDrawing = true;
+        app.handlePixelClick(event);
       });
-    
-      app.board.addEventListener("mouseleave", () => {
+
+      pixel.addEventListener("mouseup", (event) => {
+        event.preventDefault();
         isDrawing = false;
       });
-    },
+
+      pixel.addEventListener("mousemove", (event) => {
+        if (isDrawing) {
+          app.handlePixelClick(event);
+        }
+      });
+    });
+
+    app.board.addEventListener("mouseleave", () => {
+      isDrawing = false;
+    });
+  },
 
   /**
    * Function to create a slider with a label dynamically
@@ -168,12 +183,17 @@ const app = {
     // Clear existing form content
     app.form.innerHTML = "";
 
+    // const logo = document.createElement("p");
+    // logo.textContent = "Pixel Painter";
+    // logo.className = "logo";
+    // app.form.appendChild(logo);
+
     // Create grid size slider
     const gridSizeSlider = app.createSlider(
       "grid-size-slider",
       "Grid Size",
       1,
-      20,
+      70,
       app.gridSize,
       1
     );
@@ -191,7 +211,7 @@ const app = {
     app.form.appendChild(pixelSizeSlider);
 
     // Create validation button
-    const validation = app.createButton("Create");
+    const validation = app.createButton("⌗");
     app.form.appendChild(validation);
 
     // const reset = app.createButton('Clear');
@@ -238,7 +258,6 @@ const app = {
   //  * @param {PointerEvent} event L'evt a l'orinine de l'appel à la fonction
   //  */
 
-  
   drawPalette: function () {
     // Création d'une div 'palette'
     let palette = document.createElement("div");
