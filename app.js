@@ -1,7 +1,7 @@
 const app = {
   // Taille de la grille et des pixels
-  gridSize: 30,
-  pixelSize: 20,
+  gridSize: 20,
+  pixelSize: 30,
   activeColor: "color1",
 
   // Element container pour notre grille de pixels
