@@ -86,11 +86,15 @@ span {
   margin-left: 4px;
   cursor: pointer;
   font-size: 1rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  padding: 2px 5px;
   border: 1px solid transparent;
   transition: border 0.1s ease-out;
   border-radius: .1rem;
+}
+
+.create-button {
+  font-size: 14px;
+  padding: 4px 6px;
 }
 
 .input-button:hover {

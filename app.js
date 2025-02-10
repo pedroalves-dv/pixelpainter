@@ -159,7 +159,9 @@ const app = {
     const buttonsPanel = document.createElement("div");
     buttonsPanel.className = "buttons-panel";
     app.form.appendChild(buttonsPanel);
-    const createButton = app.createButton("⌗");
+    // creta button
+    const createButton = app.createButton("Generate");
+    createButton.className = "input-button create-button";
     createButton.addEventListener("click", app.updateBoard);
     buttonsPanel.appendChild(createButton);
 
