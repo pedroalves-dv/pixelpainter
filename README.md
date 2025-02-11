@@ -11,6 +11,7 @@
 ✅ **Customizable Grid** – Adjust the canvas size for different pixel resolutions.  
 ✅ **Color Picker** – Select and apply colors to individual pixels.  
 ✅ **Generate Canvas** – Reset the grid or generate a new one after playing with grid settings.
+
 ✅ **Save Artwork** – Download your pixel art as an image.  
 ✅ **Undo/Redo Functionality** – Effortlessly revert or reapply changes.  
 ✅ **Persistent Storage** – Saves progress using local storage.  
