@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const app = {
-    gridSize: 20,
+    // gridSize: 20,
+    gridWidth: 20,
+    gridHeight: 20,
     pixelSize: 30,
     activeColor: "color1",
     board: document.getElementById("invader"),
@@ -80,30 +82,17 @@ document.addEventListener("DOMContentLoaded", function () {
       "color54",
       "color55",
     ],
+
     init: function () {
-      // // If there's a saved board state in localStorage, load it
-      // const savedState = localStorage.getItem("pixelpainter-board");
-      // if (savedState) {
-      //   app.board.innerHTML = savedState;
-      // } else {
-      //   // Otherwise, create a blank board
-      //   app.drawBoard();
-      // }
-
       app.drawBoard();
-      // app.saveState();
-      // app.history.push(app.board.innerHTML);
-      // app.historyIndex = 0;
-      // app.history = [];
-      // app.historyIndex = -1;
-      app.saveState(); // Save initial empty board once
-
+      app.saveState();
       app.drawFormWithSlidersAndButtons();
       app.drawPalette();
       app.drawNav();
       app.enableDrawing();
       app.enablePanning();
     },
+
     createButton: function (textTitre, callback) {
       let button = document.createElement("button");
       button.textContent = textTitre;
@@ -113,12 +102,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       return button;
     },
+
     drawBoard: function () {
       app.board.innerHTML = "";
-      for (let i = 0; i < app.gridSize; i++) {
+      for (let i = 0; i < app.gridHeight; i++) {
         let ligne = document.createElement("div");
         ligne.className = "ligne";
-        for (let j = 0; j < app.gridSize; j++) {
+        for (let j = 0; j < app.gridWidth; j++) {
           let pixel = document.createElement("div");
           pixel.classList.add("pixel", "border");
           pixel.style.width = app.pixelSize + "px";
@@ -128,35 +118,26 @@ document.addEventListener("DOMContentLoaded", function () {
         app.board.appendChild(ligne);
       }
       app.enableDrawing();
-
-      // Only save an initial empty state if history is empty
-      // if (app.history.length === 0) {
-      //   app.saveState();
-      // }
     },
+
     handlePixelClick: function (event) {
       const element = event.target;
       if (!element.classList.contains("pixel")) {
         // app.saveState();
         return;
       }
-
       // If it's the first user action, store the initial state before modifying anything
       if (app.historyIndex === 0) {
         app.saveState(); // Ensure first change is undoable
       }
-
       // Remove all palette--* classes
       app.styles.forEach((style) => {
         element.classList.remove("palette--" + style);
       });
       // Add the currently active color
       element.classList.add("palette--" + app.activeColor);
-
       // After each valid pixel click, save the state
-
       console.log(app.history, this.historyIndex);
-      // app.saveState();
     },
 
     enableDrawing: function () {
@@ -200,6 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         isDrawing = false;
       });
     },
+
     createSlider: function (id, label, min, max, value, step) {
       let sliderContainer = document.createElement("div");
       sliderContainer.className = "slider-container";
@@ -220,10 +202,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       return sliderContainer;
     },
+
     clearBoard: function () {
       app.board.innerHTML = "";
       app.drawBoard();
     },
+
     togglePixelBorder: function () {
       app.borderVisible = !app.borderVisible;
       const pixels = document.querySelectorAll(".pixel");
@@ -247,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleBorderButton.classList.add("no-grid");
       }
     },
+
     drawFormWithSlidersAndButtons: function () {
       app.form.innerHTML = "";
       // Sliders Label
@@ -254,23 +239,31 @@ document.addEventListener("DOMContentLoaded", function () {
       slidersLabel.className = "sliders-label";
       slidersLabel.textContent = "Custom";
       app.form.appendChild(slidersLabel);
-
       // Sliders container
       const slidersContainer = document.createElement("div");
       slidersContainer.className = "sliders-container";
       app.form.appendChild(slidersContainer);
-
-      // Sliders
-      const gridSizeSlider = app.createSlider(
-        "grid-size-slider",
-        "Grid (lenght)",
+      // Grid size sliders
+      const gridWidthSlider = app.createSlider(
+        "grid-width-slider",
+        "Grid (width)",
         1,
         70,
-        app.gridSize,
+        app.gridWidth,
         1
       );
-      slidersContainer.appendChild(gridSizeSlider);
-
+      slidersContainer.appendChild(gridWidthSlider);
+    
+      const gridHeightSlider = app.createSlider(
+        "grid-height-slider",
+        "Grid (height)",
+        1,
+        70,
+        app.gridHeight,
+        1
+      );
+      slidersContainer.appendChild(gridHeightSlider);
+      // Pixel size slider
       const pixelSizeSlider = app.createSlider(
         "pixel-size-slider",
         "Pixel (px)",
@@ -297,30 +290,33 @@ document.addEventListener("DOMContentLoaded", function () {
       const presetsContainer = document.createElement("div");
       presetsContainer.className = "presets-container";
 
-      const applyPreset = (gridSize, pixelSize) => {
-        app.gridSize = gridSize;
+      const applyPreset = (gridHeight, gridWidth, pixelSize) => {
+        app.gridHeight = gridHeight;
+        app.gridWidth = gridWidth;
         app.pixelSize = pixelSize;
 
         // Update slider input and display values using querySelector
-        gridSizeSlider.querySelector("input").value = gridSize;
+        gridHeightSlider.querySelector("input").value = gridHeight;
+        gridWidthSlider.querySelector("input").value = gridWidth;
         pixelSizeSlider.querySelector("input").value = pixelSize;
-        gridSizeSlider.querySelector("span").textContent = gridSize;
+        gridHeightSlider.querySelector("span").textContent = gridHeight;
+        gridWidthSlider.querySelector("span").textContent = gridWidth;
         pixelSizeSlider.querySelector("span").textContent = pixelSize;
 
         app.drawBoard();
       };
 
       presetsContainer
-        .appendChild(app.createButton("Preset 1", () => applyPreset(11, 60)))
+        .appendChild(app.createButton("Preset 1", () => applyPreset(11, 11, 60)))
         .classList.add("preset-button");
       presetsContainer
-        .appendChild(app.createButton("Preset 2", () => applyPreset(20, 30)))
+        .appendChild(app.createButton("Preset 2", () => applyPreset(20, 20, 30)))
         .classList.add("preset-button");
       presetsContainer
-        .appendChild(app.createButton("Preset 3", () => applyPreset(30, 20)))
+        .appendChild(app.createButton("Preset 3", () => applyPreset(30, 30, 20)))
         .classList.add("preset-button");
       presetsContainer
-        .appendChild(app.createButton("Preset 4", () => applyPreset(45, 15)))
+        .appendChild(app.createButton("Preset 4", () => applyPreset(45, 45, 15)))
         .classList.add("preset-button");
 
       // Append presets container to form
@@ -438,7 +434,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      gridSizeSlider
+      gridHeightSlider
+        .querySelector("input")
+        .addEventListener("input", app.updateSliderValueDisplay);
+        gridWidthSlider
         .querySelector("input")
         .addEventListener("input", app.updateSliderValueDisplay);
       pixelSizeSlider
@@ -541,7 +540,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateBoard: function (event) {
       event.preventDefault();
-      const gridSizeSlider = document.getElementById("grid-size-slider");
+      const gridWidthSlider = document.getElementById("grid-width-slider");
+      const gridHeightSlider = document.getElementById("grid-height-slider");
       const pixelSizeSlider = document.getElementById("pixel-size-slider");
 
       // Get the dimensions of the wrapper
@@ -550,30 +550,41 @@ document.addEventListener("DOMContentLoaded", function () {
       const wrapperHeight = wrapper.clientHeight;
 
       // Calculate the maximum grid size and pixel size that can fit within the wrapper
-      const maxGridSize = Math.min(
-        parseInt(gridSizeSlider.value, 10),
+      const maxGridHeight = Math.min(
+        parseInt(gridHeightSlider.value, 10),
+        Math.floor(wrapperWidth / app.pixelSize),
+        Math.floor(wrapperHeight / app.pixelSize)
+      );
+      const maxGridWidth = Math.min(
+        parseInt(gridWidthSlider.value, 10),
         Math.floor(wrapperWidth / app.pixelSize),
         Math.floor(wrapperHeight / app.pixelSize)
       );
       const maxPixelSize = Math.min(
         parseInt(pixelSizeSlider.value, 10),
-        Math.floor(wrapperWidth / app.gridSize),
-        Math.floor(wrapperHeight / app.gridSize)
+        Math.floor(wrapperWidth / app.gridWidth),
+        Math.floor(wrapperHeight / app.gridHeight)
       );
 
       // Update the grid size and pixel size based on the calculated maximum values
-      app.gridSize = maxGridSize;
+      app.gridHeight = maxGridHeight;
+      app.gridWidth = maxGridWidth;
       app.pixelSize = maxPixelSize;
 
       // Update the slider values to reflect the new grid size and pixel size
-      gridSizeSlider.value = app.gridSize;
+      gridHeightSlider.value = app.gridHeight;
+      gridWidthSlider.value = app.gridWidth;
       pixelSizeSlider.value = app.pixelSize;
 
       // Update the displayed values in the spans
-      const gridSizeSpan = gridSizeSlider.parentElement.querySelector("span");
+      const gridHeightSpan = gridHeightSlider.parentElement.querySelector("span");
+      const gridWidthSpan = gridWidthSlider.parentElement.querySelector("span");
       const pixelSizeSpan = pixelSizeSlider.parentElement.querySelector("span");
-      if (gridSizeSpan) {
-        gridSizeSpan.textContent = app.gridSize;
+      if (gridHeightSpan) {
+        gridHeightSpan.textContent = app.gridHeight;
+      }
+      if (gridWidthSpan) {
+        gridWidthSpan.textContent = app.gridWidth;
       }
       if (pixelSizeSpan) {
         pixelSizeSpan.textContent = app.pixelSize;
@@ -667,8 +678,8 @@ document.addEventListener("DOMContentLoaded", function () {
     exportCanvas: function (event, format) {
       event.preventDefault();
       const ctx = app.exportCanvasElement.getContext("2d");
-      app.exportCanvasElement.width = app.gridSize * app.pixelSize;
-      app.exportCanvasElement.height = app.gridSize * app.pixelSize;
+      app.exportCanvasElement.width = app.gridHeight * app.pixelSize;
+      app.exportCanvasElement.height = app.gridWidth * app.pixelSize;
       ctx.clearRect(
         0,
         0,
@@ -682,8 +693,8 @@ document.addEventListener("DOMContentLoaded", function () {
       ctx.imageSmoothingEnabled = false;
 
       pixels.forEach((pixel, index) => {
-        const col = index % app.gridSize;
-        const row = Math.floor(index / app.gridSize);
+        const col = index % app.gridHeight;
+        const row = Math.floor(index / app.gridWidth);
         const color = window.getComputedStyle(pixel).backgroundColor;
         ctx.fillStyle = color;
         ctx.fillRect(
