@@ -12,28 +12,25 @@ This site showcases the Pixel Painter project, an interactive pixel art drawing 
 
 ### 🖌️ Interactive Canvas
 
-- **Description**: An interactive canvas where users can draw pixel art. Supports click and drag.
-- **Implementation**: Users can draw on the canvas, and the drawing state is managed using JavaScript.
+- An interactive canvas where users can draw pixel art. Supports click and drag.
 
-### 📐 Grid Customization
+### 📐 Grid Customization & Presets
 
-- **Description**: Users can customize the size of the grid, the size of the tiles or "pixels" and "Create" a fresh canvas.
-- **Implementation**: The grid and pixel slider inputs allow the users to change the canvas specifications, and the "Create" button generates a new canvas.
+- Users can customize the height, width of the grid, the size of the pixels or choose a preset.
 
-### ↩️ Undo / Redo Feature
+### ↩️ Undo / Redo / Clear
 
-- **Description**: Users can undo and redo their actions while drawing.
-- **Implementation**: Records drawing state and allows users to revert or reapply their last actions through the undo and redo buttons.
+### ↩️ Zoom In & Out / Pan & Reset Position
 
 ### 🎨 Color Palette
 
-- **Description**: Select and apply colors to individual pixels.
-- **Implementation**: Color palette nav section whith "active color" visual aid.
+- Select and apply colors to individual pixels.
+
+### ↩️ Show / Hide Grid Toggle
 
 ### 💾 Export Function
 
-- **Description**: Users can export the canvas as an image file.
-- **Implementation**: The export button allows users to save their drawings as a JPG file.
+- Users can export the canvas as both a jpg and png file.
 
 ## Technologies Used
 
@@ -57,8 +54,7 @@ Simply open the `index.html` file in your preferred web browser.
 
 ## Roadmap & Future Improvements
 
-- Add various canvas types, brushes and other tools
-- More advanced export options (GIF, SVG, etc.)
+- Movable sections to customize workspace
 
 ## Contributing
 
