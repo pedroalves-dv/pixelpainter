@@ -1,5 +1,6 @@
 # Pixel Painter
 
+
 This site showcases the Pixel Painter project, an interactive pixel art drawing application with various features to enhance the user experience.
 
 ## Live Demo
