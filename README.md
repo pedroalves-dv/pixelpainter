@@ -1,52 +1,72 @@
-# 🎨 Pixel Painter
+# Pixel Painter
 
-**Pixel Painter** is a simple yet fun web-based pixel art editor that allows users to create pixelated drawings with ease. Built using HTML, CSS, and JavaScript, this project offers a minimalist and intuitive interface.
+This site showcases the Pixel Painter project, an interactive pixel art drawing application with various features to enhance the user experience.
 
-🔗 **Live Demo:** [Pixel Painter](https://pedroalves-dv.github.io/pixelpainter/)
+## Live Demo
 
-![Pixel Painter Screenshot](./pixelpainter-screenshot.jpg)
+→ [Pixel Painter](https://pedroalves-dv.github.io/pixelpainter/)
+[./assets/pixelpainter-screenshot.jpg](https://pedroalves-dv.github.io/pixelpainter/)
 
-## 📌 Features
+## Features
 
-✅ **Easy-to-use Interface** – Click to paint, erase, and create pixel art effortlessly.  
-✅ **Customizable Grid** – Adjust the canvas size for different pixel resolutions.  
-✅ **Color Picker** – Select and apply colors to individual pixels.  
-✅ **Clear Canvas** – Reset the grid to start fresh.  
-✅ **Save Artwork** – Download your pixel art as an image.  
-✅ **Undo/Redo Functionality** – Effortlessly revert or reapply changes.  
-✅ **Persistent Storage** – Saves progress using local storage.  
-✅ **Mobile-Friendly** – Responsive design for use on desktops, tablets, and mobile devices.
+### 🖌️ Interactive Canvas
 
-## 🛠️ Technologies Used
+- **Description**: An interactive canvas where users can draw pixel art. Supports click and drag.
+- **Implementation**: Users can draw on the canvas, and the drawing state is managed using JavaScript.
 
-- **HTML** – Structuring the webpage.
-- **CSS** – Styling the pixel canvas and UI.
-- **JavaScript** – Implementing painting logic and interactivity.
+### 📐 Grid Customization
 
-## 🚀 Getting Started
+- **Description**: Users can customize the size of the grid, the size of the tiles or "pixels" and "Create" a fresh canvas.
+- **Implementation**: The grid and pixel slider inputs allow the users to change the canvas specifications, and the "Create" button generates a new canvas.
 
-### 1️⃣ Clone the Repository
+### ↩️ Undo / Redo Feature
+
+- **Description**: Users can undo and redo their actions while drawing.
+- **Implementation**: Records drawing state and allows users to revert or reapply their last actions through the undo and redo buttons.
+
+### 🎨 Color Palette
+
+- **Description**: Select and apply colors to individual pixels.
+- **Implementation**: Color palette nav section whith "active color" visual aid.
+
+### 💾 Export Function
+
+- **Description**: Users can export the canvas as an image file.
+- **Implementation**: The export button allows users to save their drawings as a JPG file.
+
+## Technologies Used
+
+- **HTML**: For structuring the content.
+- **CSS**: For styling the website.
+- **JavaScript**: For interactive features and dynamic content.
+- **LocalStorage**: For persisting user preferences and drawing progress.
+
+## Getting Started
+
+1. Clone the Repository
+
 ```sh
  git clone https://github.com/pedroalves-dv/pixelpainter.git
  cd pixelpainter
 ```
 
-### 2️⃣ Open `index.html`
+2. Open `index.html`
+
 Simply open the `index.html` file in your preferred web browser.
 
-## 📌 Roadmap & Future Improvements
-- 🎨 Add custom canvases, brushes 
-- 🌟 More advanced export options (GIF, SVG, etc.)
+## Roadmap & Future Improvements
 
-## 🤝 Contributing
-Contributions are welcome! Feel free to fork this repository and submit a pull request with enhancements or bug fixes.
+- Add various canvas types, brushes and other tools
+- More advanced export options (GIF, SVG, etc.)
 
-## 📜 License
+## Contributing
+
+Contributions are welcome. Feel free to fork this repository and submit a pull request with enhancements or bug fixes.
+
+## License
+
 This project is licensed under the **MIT License** – feel free to use, modify, and distribute.
 
-## 👨‍💻 Author
-**Pedro Alves**  
-🔗 [GitHub](https://github.com/pedroalves-dv)  
-📧 Contact: pedroalves.dv@gmail.com
+## Contact
 
----
+For any inquiries, please contact me at [pedroalves.dv@gmail.com].
