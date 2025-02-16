@@ -11,14 +11,25 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap"
       rel="stylesheet"
     />
+    <!-- favicon link here  -->
+    <link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./style.css" />
   </head>
 
   <body>
-    <form class="configuration"></form>
+    <div class="navigation">
+      <!-- <div class="logo">⚛</div> -->
+      <div class="header"><span class="logo">⊞</span>Pixel Painter</div>
+      <div class="buttons-panel"></div>
+    </div>
+    <div class="tools">
+      <form class="configuration"></form>
+      <div class="palette"></div>
+    </div>
+    
     <div class="wrapper">
       <div id="invader"></div>
-      <canvas id="export-canvas" style="display: none;"></canvas>
+      <canvas id="export-canvas" style="display: none"></canvas>
     </div>
     <script src="./app.js"></script>
   </body>
