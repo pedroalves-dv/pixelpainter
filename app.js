@@ -81,6 +81,46 @@ document.addEventListener("DOMContentLoaded", function () {
       "color53",
       "color54",
       "color55",
+      "color56",
+      "color57",
+      "color58",
+      "color59",
+      "color60",
+      "color61",
+      "color62",
+      "color63",
+      "color64",
+      "color65",
+      "color66",
+      "color67",
+      "color68",
+      "color69",
+      "color70",
+      "color71",
+      "color72",
+      "color73",
+      "color74",
+      "color75",
+      "color76",
+      "color77",
+      "color78",
+      "color79",
+      "color80",
+      "color81",
+      "color82",
+      "color83",
+      "color84",
+      "color85",
+      "color86",
+      "color87",
+      "color88",
+      "color89",
+      "color90",
+      "color91",
+      "color92",
+      "color93",
+      "color94",
+      "color95",
     ],
 
     init: function () {
@@ -318,6 +358,24 @@ document.addEventListener("DOMContentLoaded", function () {
       presetsContainer
         .appendChild(app.createButton("Preset 4", () => applyPreset(45, 45, 15)))
         .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 5", () => applyPreset(20, 30, 30)))
+        .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 6", () => applyPreset(25, 20, 25)))
+        .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 7", () => applyPreset(10, 30, 40)))
+        .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 8", () => applyPreset(5, 24, 60)))
+        .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 9", () => applyPreset(12, 26, 60)))
+        .classList.add("preset-button");
+        presetsContainer
+        .appendChild(app.createButton("Preset 10", () => applyPreset(8, 6, 100)))
+        .classList.add("preset-button");
 
       // Append presets container to form
       app.form.appendChild(presetsContainer);
@@ -443,6 +501,11 @@ document.addEventListener("DOMContentLoaded", function () {
       pixelSizeSlider
         .querySelector("input")
         .addEventListener("input", app.updateSliderValueDisplay);
+
+        const paletteLabel = document.createElement("div");
+        paletteLabel.className = "palette-label";
+        paletteLabel.textContent = "Colors";
+        app.form.appendChild(paletteLabel);
     },
     // zoom functions
     zoomLevel: 1,
@@ -596,9 +659,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const valueSpan = sliderContainer.querySelector("span");
       valueSpan.textContent = event.target.value;
     },
+
     drawPalette: function () {
-      // let palette = document.createElement("div");
-      // palette.className = "palette";
       app.styles.forEach(function (style) {
         let anchor = document.createElement("a");
         anchor.classList.add("palette-color", "palette--" + style);

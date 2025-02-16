@@ -110,7 +110,7 @@ input[type="range"]::-webkit-slider-thumb {
   text-align: center;
   font-size: 12px;
   width: 100%;
-  padding: 3px 0;
+  padding-top: 3px;
   border: 1px solid #171717;
   border-radius: .3rem .3rem 0 0 ;
 }
@@ -288,6 +288,19 @@ img {
   align-items: center;
 }
 
+.palette-label {
+  margin-top: 5px;
+  font-family: "Atkinson Hyperlegible Next", serif;
+  background-color: #171717;
+  color: #868686;
+  text-align: center;
+  font-size: 12px;
+  width: 100%;
+  padding-top: 3px;
+  border: 1px solid #171717;
+  border-radius: .3rem .3rem 0 0 ;
+}
+
 .palette {
   display: flex;
   flex-direction: row;
@@ -298,7 +311,7 @@ img {
   border-radius: 0.2rem;
   padding: 5px;
   gap: 2px;
-  margin-top: 5px;
+  
 }
 
 .palette-color {
@@ -479,6 +492,126 @@ img {
 }
 .palette--color55 {
   background-color: #9acd32; /* Yellow Green */
+}
+.palette--color56 {
+  background-color: #E2CFEA; /* Green Yellow */
+}
+.palette--color57 {
+  background-color: #A06CD5; /* Chartreuse */
+}
+.palette--color58 {
+  background-color: #6247AA; /* Lawn Green */
+}
+.palette--color59 {
+  background-color: #102B3F; /* Lime */
+}
+.palette--color60 {
+  background-color: #062726; /* Lime Green */
+}
+.palette--color61 {
+  background-color: #F9A03F; /* Medium Spring Green */
+}
+.palette--color62 {
+  background-color: #F7D488; /* Spring Green */
+}
+.palette--color63 {
+  background-color: #EAEFB1; /* Turquoise */
+}
+.palette--color64 {
+  background-color: #E9F7CA; /* Cyan */
+}
+.palette--color65 {
+  background-color: #CEB5A7; /* Dark Turquoise */
+}
+.palette--color66 {
+  background-color: #151515; /* Steel Blue */
+}
+.palette--color67 {
+  background-color: #A63D40; /* Dodger Blue */
+}
+.palette--color68 {
+  background-color: #E9B872; /* Blue */
+}
+.palette--color69 {
+  background-color: #90A959; /* Medium Blue */
+}
+.palette--color70 {
+  background-color: #6494AA; /* Blue Violet */
+}
+.palette--color71 {
+  background-color: #CE2D4F; /* Dark Violet */
+}
+.palette--color72 {
+  background-color: #CE6D8B; /* Dark Orchid */
+}
+.palette--color73 {
+  background-color: #CEBBC9; /* Medium Orchid */
+}
+.palette--color74 {
+  background-color: #4056F4; /* Orchid */
+}
+.palette--color75 {
+  background-color: #470FF4; /* Violet */
+}
+.palette--color76 {
+  background-color: #540D6E; /* Plum */
+}
+.palette--color77 {
+  background-color: #EE4266; /* Thistle */
+}
+.palette--color78 {
+  background-color: #FFD23F; /* Magenta */
+}
+.palette--color79 {
+  background-color: #3BCEAC; /* Deep Magenta */
+}
+.palette--color80 {
+  background-color: #0EAD69; /* Deep Pink */
+}
+.palette--color81 {
+  background-color: #BA1200; /* Orange Red */
+}
+.palette--color82 {
+  background-color: #031927; /* Tomato */
+}
+.palette--color83 {
+  background-color: #9DD1F1; /* Coral */
+}
+.palette--color84 {
+  background-color: #508AA8; /* Dark Orange */
+}
+.palette--color85 {
+  background-color: #C8E0F4; /* Orange */
+}
+.palette--color86 {
+  background-color: #721817; /* Gold */
+}
+.palette--color87 {
+  background-color: #FA9F42; /* Yellow */
+}
+.palette--color88 {
+  background-color: #2B4162; /* Yellow Green */
+}
+.palette--color89 {
+  background-color: #0B6E4F; /* Green Yellow */
+}
+.palette--color90 {
+  background-color: #E0E0E2; /* Chartreuse */
+}
+.palette--color91 {
+  background-color: #262626; /* Lawn Green */
+}
+.palette--color92 {
+  background-color: #ACBFA4; /* Lime */
+}
+.palette--color93 {
+  background-color: #E2E8CE; /* Lime Green */
+}
+.palette--color94 {
+  background-color: #FF7F11; /* Medium Spring Green */
+}
+.palette--color95 {
+  background-color: #FF1B1C; /* Spring Green */
 }
 
 .wrapper {
