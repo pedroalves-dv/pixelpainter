@@ -1,12 +1,12 @@
 # Pixel Painter
 
-
-This site showcases the Pixel Painter project, an interactive pixel art drawing application with various features to enhance the user experience.
+Pixel Painter is an interactive pixel art drawing application.
 
 ## Live Demo
 
 → [Pixel Painter](https://pedroalves-dv.github.io/pixelpainter/)
-[./assets/pixelpainter-screenshot.jpg](https://pedroalves-dv.github.io/pixelpainter/)
+
+![Screenshot of Pixel Painter](assets/pixelpainter-screenshot.jpg)
 
 ## Features
 
