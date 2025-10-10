@@ -129,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
       app.drawFormWithSlidersAndButtons();
       app.drawPalette();
       app.drawNav();
-      app.enableDrawing();
       app.enablePanning();
     },
 
@@ -162,63 +161,171 @@ document.addEventListener("DOMContentLoaded", function () {
 
     handlePixelClick: function (event) {
       const element = event.target;
-      if (!element.classList.contains("pixel")) {
-        // app.saveState();
-        return;
-      }
-      // If it's the first user action, store the initial state before modifying anything
-      if (app.historyIndex === 0) {
-        app.saveState(); // Ensure first change is undoable
-      }
+      if (!element.classList.contains("pixel")) return;
+      app.paintPixel(element);
+    },
+
+    // Paint a single pixel element with the current active color
+    paintPixel: function (element) {
+      if (!element || !element.classList || !element.classList.contains("pixel")) return;
       // Remove all palette--* classes
       app.styles.forEach((style) => {
         element.classList.remove("palette--" + style);
       });
-      // Add the currently active color
       element.classList.add("palette--" + app.activeColor);
-      // After each valid pixel click, save the state
-      console.log(app.history, this.historyIndex);
+    },
+
+    // --- Image upload & mapping helpers ---
+    // Read computed palette colors and return array of { style, r,g,b }
+    getPaletteRGBs: function () {
+      const paletteElems = Array.from(document.querySelectorAll('.palette-color'));
+      const colors = paletteElems.map((el) => {
+        const style = el.dataset.style;
+        const cs = window.getComputedStyle(el).backgroundColor;
+        // parse rgb(a) string -> [r,g,b]
+        const m = cs.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (m) return { style, r: +m[1], g: +m[2], b: +m[3] };
+        return { style, r: 0, g: 0, b: 0 };
+      });
+      return colors;
+    },
+
+    // Given r,g,b find nearest palette style (euclidean distance)
+    nearestPaletteColor: function (r, g, b, paletteRGBs) {
+      let best = null;
+      let bestDist = Infinity;
+      for (const p of paletteRGBs) {
+        const dr = p.r - r;
+        const dg = p.g - g;
+        const db = p.b - b;
+        const dist = dr * dr + dg * dg + db * db;
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = p;
+        }
+      }
+      return best ? best.style : app.styles[0];
+    },
+
+    // Handle a File object selected by the user
+    handleImageUpload: function (file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function (ev) {
+        const img = new Image();
+        img.onload = async function () {
+          try {
+            // create an offscreen canvas scaled to the current grid size
+            const tmp = document.createElement('canvas');
+            tmp.width = app.gridWidth;
+            tmp.height = app.gridHeight;
+            const ctx = tmp.getContext('2d');
+            // draw the uploaded image scaled to fit the grid
+            ctx.drawImage(img, 0, 0, tmp.width, tmp.height);
+            // get ImageData
+            const data = ctx.getImageData(0, 0, tmp.width, tmp.height).data;
+            // map image data to palette and paint board
+            app.mapImageToGrid(data, tmp.width, tmp.height);
+          } catch (err) {
+            console.error('Error processing image', err);
+          }
+        };
+        img.onerror = function (err) {
+          console.error('Image load error', err);
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
+    // Map image pixel data (Uint8ClampedArray) scaled to width,height to the board
+    mapImageToGrid: function (data, width, height) {
+      if (!data || data.length === 0) return;
+      // compute palette rgb list
+      const palette = app.getPaletteRGBs();
+
+      // Save state for undo
+      app.saveState();
+
+      // iterate rows/cols and set pixel classes
+      const pixels = Array.from(document.querySelectorAll('.pixel'));
+      for (let row = 0; row < height; row++) {
+        for (let col = 0; col < width; col++) {
+          const idx = (row * width + col) * 4;
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const a = data[idx + 3];
+          // If transparent, skip painting
+          if (a === 0) continue;
+          const style = app.nearestPaletteColor(r, g, b, palette);
+          const pixelIndex = row * app.gridWidth + col;
+          const el = pixels[pixelIndex];
+          if (el) {
+            // temporarily set activeColor then paint
+            const previousActive = app.activeColor;
+            app.activeColor = style;
+            app.paintPixel(el);
+            app.activeColor = previousActive;
+          }
+        }
+      }
+      // Save post-change state
+      app.saveState();
     },
 
     enableDrawing: function () {
-      let isDrawing = false;
-      const pixels = document.querySelectorAll(".pixel");
+      // Don't attach handlers more than once
+      if (app._drawingHandlersAttached) return;
+      app._drawingHandlersAttached = true;
 
-      pixels.forEach((pixel) => {
-        // Press down to start drawing
-        pixel.addEventListener("mousedown", (event) => {
-          if (app.panning.isSpaceDown) return;     
-          event.preventDefault();
-          isDrawing = true;
+      app._isDrawing = false;
 
-          // Ensure the initial state is stored before the first stroke
-          if (app.historyIndex === 0) {
-            app.saveState();
-          }
-          // Paint the pixel right away
-          app.handlePixelClick(event);
-        });
+      const board = app.board;
 
-        // Move over pixels while the mouse is down to keep painting
-        pixel.addEventListener("mousemove", (event) => {
-          if (isDrawing) {
-            app.handlePixelClick(event);
-          }
-        });
+      function getPixelAtEvent(e) {
+        // Use elementFromPoint to account for transforms and get the top-most pixel
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el && el.classList && el.classList.contains("pixel")) return el;
+        return null;
+      }
 
-        // Release to finish drawing, record a single history entry
-        pixel.addEventListener("mouseup", (event) => {
-          event.preventDefault();
-          if (isDrawing) {
-            app.saveState(); // store the final board state
-          }
-          isDrawing = false;
-        });
+      board.addEventListener("pointerdown", (e) => {
+        // Only respond to primary button
+        if (e.button !== 0) return;
+        if (app.panning.isSpaceDown) return;
+        const pixel = getPixelAtEvent(e);
+        if (!pixel) return;
+        e.preventDefault();
+        // Mark drawing started and save pre-change state
+        if (!app._isDrawing) {
+          app._isDrawing = true;
+          app.saveState();
+        }
+        app.paintPixel(pixel);
       });
 
-      // If the mouse leaves the board mid-drag, stop drawing.
-      app.board.addEventListener("mouseleave", () => {
-        isDrawing = false;
+      document.addEventListener("pointermove", (e) => {
+        if (!app._isDrawing) return;
+        const pixel = getPixelAtEvent(e);
+        if (pixel) {
+          app.paintPixel(pixel);
+        }
+      });
+
+      document.addEventListener("pointerup", (e) => {
+        if (!app._isDrawing) return;
+        // finalize and save
+        app._isDrawing = false;
+        app.saveState();
+      });
+
+      // pointercancel/touchcancel handling
+      document.addEventListener("pointercancel", () => {
+        if (app._isDrawing) {
+          app._isDrawing = false;
+          app.saveState();
+        }
       });
     },
 
@@ -461,6 +568,91 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       buttonsPanel.appendChild(exportButton);
 
+      // image upload (client-side) - button + hidden file input
+      const uploadButton = document.createElement("button");
+      uploadButton.textContent = "✦"; // upload icon-like glyph
+      uploadButton.className = "input-button upload-button";
+      uploadButton.setAttribute("data-tooltip", "Upload Image");
+      buttonsPanel.appendChild(uploadButton);
+
+      const uploadInput = document.createElement("input");
+      uploadInput.type = "file";
+      uploadInput.accept = "image/*";
+      uploadInput.style.display = "none";
+      // handle files
+      uploadInput.addEventListener("change", (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (file) {
+          app.handleImageUpload(file);
+        }
+        // reset input so the same file can be picked again
+        uploadInput.value = "";
+      });
+      // click file picker when button pressed
+      uploadButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        uploadInput.click();
+      });
+      // append the hidden input to the form so it's in DOM
+      app.form.appendChild(uploadInput);
+
+      // eyedropper button (pick color from a pixel)
+      const eyedropperButton = document.createElement("button");
+      eyedropperButton.textContent = "🖌"; // eyedropper-like glyph
+      eyedropperButton.className = "input-button eyedropper-button";
+      eyedropperButton.setAttribute("data-tooltip", "Eyedropper");
+      buttonsPanel.appendChild(eyedropperButton);
+
+      // Toggle eyedropper active state on click
+      eyedropperButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        app._eyedropperActive = !app._eyedropperActive;
+        if (app._eyedropperActive) {
+          eyedropperButton.classList.add("active");
+          app.board.style.cursor = "copy";
+        } else {
+          eyedropperButton.classList.remove("active");
+          app.board.style.cursor = "crosshair";
+        }
+      });
+
+      // Capture pointerdown early so we can pick color before paint handlers run
+      document.addEventListener(
+        "pointerdown",
+        function (ev) {
+          if (!app._eyedropperActive) return;
+          // find the topmost element at pointer
+          const el = document.elementFromPoint(ev.clientX, ev.clientY);
+          if (!el || !el.classList || !el.classList.contains("pixel")) return;
+
+          // find a palette--class on the pixel; if none, default to white ('color5')
+          const cls = Array.from(el.classList).find((c) => c.startsWith("palette--"));
+          let style = null;
+          if (cls) {
+            style = cls.replace("palette--", "");
+          } else {
+            style = 'color5'; // white as default for blank pixels
+          }
+
+          // update palette UI active color
+          const old = document.querySelector(".active-color");
+          if (old) old.classList.remove("active-color");
+          const newEl = document.querySelector(`.palette-color[data-style="${style}"]`);
+          if (newEl) newEl.classList.add("active-color");
+          app.activeColor = style;
+
+          // deactivate eyedropper and restore cursor/button state
+          app._eyedropperActive = false;
+          eyedropperButton.classList.remove("active");
+          app.board.style.cursor = "crosshair";
+
+          // Prevent further handlers (like drawing) from handling this event
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+        },
+        true // useCapture true so we run before other listeners
+      );
+
       const exportJPG = document.createElement("a");
       exportJPG.href = "#";
       exportJPG.textContent = "Export as JPG";
@@ -585,12 +777,16 @@ document.addEventListener("DOMContentLoaded", function () {
     
       document.addEventListener("mouseup", (e) => {
         if (!app.panning.isDragging) return;
-    
-        app.panning.offsetX = parseFloat(app.board.style.transform.match(/translate\((-?\d+)px, (-?\d+)px\)/)[1]);
-    app.panning.offsetY = parseFloat(app.board.style.transform.match(/translate\((-?\d+)px, (-?\d+)px\)/)[2]);
 
-    app.panning.isDragging = false;
-    app.applyZoom();
+        // Try to parse translate(xpx, ypx) allowing decimals; fallback to existing offsets
+        const m = app.board.style.transform.match(/translate\((-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px\)/);
+        if (m) {
+          app.panning.offsetX = parseFloat(m[1]);
+          app.panning.offsetY = parseFloat(m[2]);
+        }
+
+        app.panning.isDragging = false;
+        app.applyZoom();
       });
     },
 
@@ -682,7 +878,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     handleChangeCurrentColor: function (event) {
       const oldColor = document.querySelector(".active-color");
-      oldColor.classList.remove("active-color");
+      if (oldColor) oldColor.classList.remove("active-color");
       let newColor = event.target;
       newColor.classList.add("active-color");
       app.activeColor = event.target.dataset.style;
@@ -740,33 +936,40 @@ document.addEventListener("DOMContentLoaded", function () {
     exportCanvas: function (event, format) {
       event.preventDefault();
       const ctx = app.exportCanvasElement.getContext("2d");
-      app.exportCanvasElement.width = app.gridHeight * app.pixelSize;
-      app.exportCanvasElement.height = app.gridWidth * app.pixelSize;
-      ctx.clearRect(
-        0,
-        0,
-        app.exportCanvasElement.width,
-        app.exportCanvasElement.height
-      );
 
-      const pixels = document.querySelectorAll(".pixel");
-      // ctx.lineWidth = 0.1;
-      // ctx.strokeStyle = "black";
+      // Correct canvas dimensions: width = gridWidth * pixelSize, height = gridHeight * pixelSize
+      const canvasWidth = app.gridWidth * app.pixelSize;
+      const canvasHeight = app.gridHeight * app.pixelSize;
+      app.exportCanvasElement.width = canvasWidth;
+      app.exportCanvasElement.height = canvasHeight;
+
       ctx.imageSmoothingEnabled = false;
 
+      // For JPEG exports, paint a white background; for PNG keep transparency
+      const isJpeg = format === "jpeg" || format === "jpg";
+      if (isJpeg) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      } else {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      }
+
+      const pixels = Array.from(document.querySelectorAll(".pixel"));
+      // draw each logical pixel into the canvas using consistent indexing (gridWidth)
       pixels.forEach((pixel, index) => {
-        const col = index % app.gridHeight;
+        const col = index % app.gridWidth;
         const row = Math.floor(index / app.gridWidth);
         const color = window.getComputedStyle(pixel).backgroundColor;
-        ctx.fillStyle = color;
-        ctx.fillRect(
-          col * app.pixelSize,
-          row * app.pixelSize,
-          app.pixelSize,
-          app.pixelSize
-        );
-        if (app.borderVisible) {
-          ctx.strokeRect(
+
+        // If pixel is painted, draw its color
+        const isTransparent =
+          !color ||
+          color === "transparent" ||
+          color === "rgba(0, 0, 0, 0)";
+
+        if (!isTransparent) {
+          ctx.fillStyle = color;
+          ctx.fillRect(
             col * app.pixelSize,
             row * app.pixelSize,
             app.pixelSize,
@@ -775,9 +978,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+      // Draw grid lines in a single pass for crisp 1px lines
+      if (app.borderVisible) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#171717";
+        ctx.lineWidth = 1;
+
+        // vertical lines
+        for (let x = 0; x <= app.gridWidth; x++) {
+          const px = x * app.pixelSize + 0.5; // 0.5 for crisp 1px lines on canvas
+          ctx.moveTo(px, 0);
+          ctx.lineTo(px, canvasHeight);
+        }
+
+        // horizontal lines
+        for (let y = 0; y <= app.gridHeight; y++) {
+          const py = y * app.pixelSize + 0.5;
+          ctx.moveTo(0, py);
+          ctx.lineTo(canvasWidth, py);
+        }
+
+        ctx.stroke();
+      }
+
       const link = document.createElement("a");
-      link.download = `pixelpainter.${format}`;
-      link.href = app.exportCanvasElement.toDataURL(`image/${format}`);
+      const ext = isJpeg ? "jpg" : "png";
+      link.download = `pixelpainter.${ext}`;
+      const mime = isJpeg ? "image/jpeg" : "image/png";
+      link.href = app.exportCanvasElement.toDataURL(mime);
       link.click();
     },
   };
